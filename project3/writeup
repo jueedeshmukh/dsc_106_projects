@@ -1,0 +1,72 @@
+# Project 3 Write-Up: How Hot Will San Diego Summers Get?
+
+---
+
+## Rationale for Design Decisions
+
+### The Question
+
+Our visualization focuses on a single, human-relatable question: **how much hotter will San Diego summers get in our lifetime?** Rather than presenting a broad overview of global climate change, we chose to anchor the story to a specific place and a specific time horizon (1950–2050) that feels personally relevant to a general audience. The goal was for someone with no climate science background to open the page and immediately understand what they are looking at and why it matters.
+
+### Visual Encoding
+
+**Temperature anomaly over raw temperature**
+We chose to display temperature as degrees above the pre-industrial baseline (1850–1900 average) rather than raw Fahrenheit or Celsius values. This makes two things immediately legible: the direction and magnitude of change over time, and the relationship to the Paris Agreement targets, which are themselves defined as warming above pre-industrial levels. Raw temperatures would have made the chart harder to read and the Paris reference lines meaningless.
+
+**5-year rolling average over raw annual values**
+We initially plotted raw annual summer averages, but the resulting lines were visually noisy due to natural year-to-year climate variability. This obscured the long-term warming trend. A 5-year rolling average smooths the noise while preserving the trend, making the upward trajectory unmistakably clear to a non-technical viewer.
+
+**Line chart over bar chart**
+We initially created a static line chart chart showing average summer temperature by year, from 1950-2100. While that would have worked for a static comparison, the TA feedback pushed us towards more modes of interaction: zooming, panning, hovering, and threshold crossing markers. A line chart also communicates the idea of an unfolding trajectory over time more naturally than bars.
+
+**Three future scenarios, all visible by default**
+We show SSP1-1.9 (very low emissions), SSP2-4.5 (moderate emissions), and SSP5-8.5 (high emissions) simultaneously, all visible on load. The spread between them is the core message: our choices about emissions determine how hot San Diego summers will be. Showing them together makes that contrast immediate. We chose GFDL-ESM4 as the model because it is one of the few CMIP6 models that includes SSP1-1.9, allowing us to show a true low-emissions scenario alongside the worst case.
+
+**Dark background**
+We chose a dark color scheme for both aesthetic and functional reasons. The high-contrast colored lines (blue, orange, red) read more clearly against a dark background than a white one, and the overall visual feel communicates the gravity of the subject matter.
+
+**Dashed vertical divider at 2015**
+Without a clear visual separator, viewers had no way to distinguish observed historical data from modeled future projections. The dashed vertical line at 2015, labeled "PAST" and "Projections Begin," makes this boundary explicit without requiring any explanation.
+
+**Paris Agreement threshold markers**
+The TA suggested marking specific points where emissions cross the Paris targets. We implemented this as colored dots on each scenario line at the exact year each scenario crosses +1.5°C and +2.0°C, with year labels. This transforms abstract climate policy targets into concrete, readable moments on the chart: "SSP5-8.5 crosses the 1.5°C target in 2027."
+
+### Interaction Techniques
+
+**Checkbox legend in the sidebar**
+We considered toggle buttons and a floating legend, but ultimately placed checkboxes in a fixed sidebar to the right of the chart. This keeps the interaction always visible without overlapping the data, and the sidebar format naturally accommodates the plain-English scenario descriptions that help non-technical users understand what each line represents.
+
+**Animated line drawing on load**
+Rather than showing all four lines simultaneously on page load, which we found overwhelming in early testing, we animate each line drawing itself one at a time in sequence: historical first, then SSP1-1.9, SSP2-4.5, and SSP5-8.5. This gives viewers time to register each scenario before the next appears and creates a more engaging first impression.
+
+**Brush slider for time range selection**
+A mini-chart below the main chart allows users to drag handles to focus on a specific time period. This was included in response to TA feedback requesting zoom and pan capabilities. The brush also syncs with scroll-to-zoom on the main chart, so users have two intuitive ways to explore the time axis.
+
+**Hover tooltips**
+Hovering over the chart shows a unified tooltip displaying the temperature anomaly for all visible scenarios at that year. This supports the core comparison task: at any given year, how different are the outcomes under each scenario?
+
+---
+
+## Development Process
+
+### Team
+
+This project had four members: Juee, Arushi, Siya, and Sahar.
+
+For the checkpoint submission, Arushi took the lead, formulating the research question and producing three of the five visualizations, while Siya and Sahar each contributed one visualization. Arushi also recorded and submitted the video. Members worked independently and each cleaned the dataset in their own way, though the underlying dataset and research question were shared.
+
+For the final submission, after the research question was formualted, Juee built the interactive D3.js visualization and we all reviewed the write-up.
+
+### Development Process
+
+The most time-consuming part of this project was understanding and accessing the data. CMIP6 is a large, complex climate dataset with its own terminology: experiment IDs, source IDs, table IDs, Zarr stores, SSP scenarios. None of this was familiar at the start. A significant amount of time was spent learning what the catalog columns meant, identifying which model and scenarios had the data needed (GFDL-ESM4 being one of the few models with SSP1-1.9), and resolving authentication issues with the Google Cloud Storage bucket that hosts the data.
+
+Once the data was understood and successfully loaded, processing it in Python (filtering to San Diego's grid cell, computing the pre-industrial baseline, isolating June–August months, applying a rolling average, and exporting a clean CSV) was relatively straightforward.
+
+Building the D3.js visualization took the second-largest share of time. The main challenges were decoupling the brush and zoom interactions so they didn't conflict with each other, implementing the animated line drawing, and ensuring the sidebar toggles correctly updated the crossing dot markers as scenarios were hidden and shown.
+
+In total, between all 4 members the final submission represents approximately **10-15 person-hours** of work, the majority spent on data exploration and the D3 implementation.
+
+---
+
+*Visualization built with D3.js v7. Data from CMIP6 via NOAA-GFDL (GFDL-ESM4 model), processed in Python using xarray, gcsfs, and pandas.*
