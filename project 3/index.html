@@ -14,12 +14,6 @@
       --border:    rgba(255,255,255,0.08);
       --text:      #e8e8f0;
       --muted:     #666688;
-      --historical:#a0a0b8;
-      --ssp119:    #4fc3f7;
-      --ssp245:    #ffb74d;
-      --ssp585:    #ef5350;
-      --paris15:   rgba(255,255,255,0.35);
-      --paris20:   rgba(255,255,255,0.55);
     }
 
     body {
@@ -33,11 +27,10 @@
       padding: 40px 20px 60px;
     }
 
-    /* ── Header ── */
     header {
       width: 100%;
-      max-width: 960px;
-      margin-bottom: 32px;
+      max-width: 1100px;
+      margin-bottom: 24px;
     }
 
     .eyebrow {
@@ -50,147 +43,54 @@
     }
 
     h1 {
-      font-size: clamp(22px, 4vw, 36px);
+      font-size: clamp(22px, 4vw, 34px);
       font-weight: 600;
       line-height: 1.2;
       color: var(--text);
       margin-bottom: 12px;
     }
 
-    h1 span { color: var(--ssp585); }
-
     .subtitle {
       font-size: 14px;
       color: var(--muted);
       line-height: 1.6;
-      max-width: 620px;
+      max-width: 680px;
     }
 
-    /* ── Instructions ── */
     .instructions {
       width: 100%;
-      max-width: 960px;
+      max-width: 1100px;
+      margin-bottom: 18px;
       display: flex;
-      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      gap: 4px 36px;
     }
 
-    .instruction-pill {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 12px;
+    .instructions p {
+      font-size: 11px;
       color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-family: 'Space Mono', monospace;
     }
 
-    .instruction-pill .icon { font-size: 14px; }
-
-    /* ── Chart card ── */
-    .card {
+    /* Main layout */
+    .viz-wrapper {
       width: 100%;
-      max-width: 960px;
+      max-width: 1100px;
+      display: flex;
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 32px 32px 24px;
+      overflow: hidden;
+    }
+
+    .chart-area {
+      flex: 1;
+      min-width: 0;
+      padding: 28px 12px 24px 28px;
       position: relative;
     }
 
-    #chart { width: 100%; }
-
-    /* ── Legend / toggles ── */
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 24px;
-      margin-top: 24px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
-      padding: 4px 0;
-    }
-
-    .legend-item input[type="checkbox"] { display: none; }
-
-    .legend-swatch {
-      width: 28px;
-      height: 3px;
-      border-radius: 2px;
-      transition: opacity 0.2s;
-      position: relative;
-    }
-
-    .legend-swatch::before {
-      content: '';
-      position: absolute;
-      left: -3px; top: -5px;
-      width: 14px; height: 14px;
-      border-radius: 3px;
-      border: 2px solid currentColor;
-      background: var(--bg2);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .legend-item.active .legend-swatch::before { opacity: 1; }
-
-    .legend-label {
-      font-size: 13px;
-      color: var(--text);
-      transition: opacity 0.2s;
-    }
-
-    .legend-item.hidden .legend-label { opacity: 0.3; }
-    .legend-item.hidden .legend-swatch { opacity: 0.2; }
-
-    /* ── D3 SVG styles ── */
-    .axis text {
-      fill: var(--muted);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-    }
-    .axis path, .axis line { stroke: var(--border); }
-    .grid line { stroke: var(--border); stroke-dasharray: 2,4; }
-    .grid path { display: none; }
-
-    .paris-line { stroke-dasharray: 6,4; stroke-width: 1; }
-    .paris-label {
-      fill: var(--muted);
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-    }
-
-    .divider-line {
-      stroke: rgba(255,255,255,0.15);
-      stroke-dasharray: 4,4;
-      stroke-width: 1;
-    }
-
-    .divider-label {
-      fill: rgba(255,255,255,0.25);
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.05em;
-    }
-
-    .scenario-line {
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .crossing-dot { stroke: var(--bg); stroke-width: 2; }
+    #chart { width: 100%; display: block; }
 
     .tooltip {
       position: absolute;
@@ -221,17 +121,102 @@
       margin: 3px 0;
     }
 
-    .tooltip-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
+    .tooltip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 210px;
       flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ── Footer note ── */
+    .sidebar-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+      margin-bottom: 4px;
+    }
+
+    .legend-item:hover { background: rgba(255,255,255,0.04); }
+
+    .legend-item.active { border-color: var(--border); }
+
+    .legend-item.hidden {
+      opacity: 0.3;
+    }
+
+    .legend-check {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      border: 2px solid;
+      flex-shrink: 0;
+      margin-top: 2px;
+      position: relative;
+      transition: background 0.15s;
+    }
+
+    .legend-item.active .legend-check::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .legend-text { flex: 1; }
+
+    .legend-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .legend-desc {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* SVG */
+    .axis text { fill: #555577; font-family: 'Space Mono', monospace; font-size: 10px; }
+    .axis path, .axis line { stroke: rgba(255,255,255,0.07); }
+    .grid line { stroke: rgba(255,255,255,0.04); stroke-dasharray: 2,4; }
+    .grid path { display: none; }
+    .paris-line { stroke-dasharray: 6,4; stroke-width: 1; }
+    .paris-label { fill: #555577; font-family: 'Space Mono', monospace; font-size: 10px; }
+    .divider-line { stroke: rgba(255,255,255,0.12); stroke-dasharray: 4,4; stroke-width: 1; }
+    .divider-label { fill: rgba(255,255,255,0.18); font-family: 'Space Mono', monospace; font-size: 9px; }
+    .scenario-line { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .crossing-dot { stroke: #0a0a0f; stroke-width: 2; }
+
+    .brush .selection { fill: rgba(255,255,255,0.07); stroke: rgba(255,255,255,0.18); }
+    .brush .handle { fill: rgba(255,255,255,0.3); }
+
     .footnote {
       width: 100%;
-      max-width: 960px;
-      margin-top: 16px;
+      max-width: 1100px;
+      margin-top: 14px;
       font-size: 11px;
       color: var(--muted);
       font-family: 'Space Mono', monospace;
@@ -249,16 +234,20 @@
   </header>
 
   <div class="instructions">
-    <div class="instruction-pill"><span class="icon">☑</span> Check/uncheck scenarios in the legend to compare</div>
-    <div class="instruction-pill"><span class="icon">🖱</span> Scroll to zoom · Click and drag to pan</div>
-    <div class="instruction-pill"><span class="icon">⬜</span> Drag the handles below the chart to focus on a time period</div>
-    <div class="instruction-pill"><span class="icon">💬</span> Hover over lines for exact temperatures</div>
+    <p>→ Check or uncheck scenarios on the right to compare futures</p>
+    <p>→ Hover over the chart to see exact temperatures by year</p>
+    <p>→ Drag the handles on the mini-chart below to zoom into a time period</p>
+    <p>→ Scroll on the chart to zoom, click and drag to pan</p>
   </div>
 
-  <div class="card">
-    <svg id="chart"></svg>
-    <div class="tooltip" id="tooltip"></div>
-    <div class="legend" id="legend"></div>
+  <div class="viz-wrapper">
+    <div class="chart-area">
+      <svg id="chart"></svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-title">Emission Scenarios</div>
+    </div>
   </div>
 
   <div class="footnote">
