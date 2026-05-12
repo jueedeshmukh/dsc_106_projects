@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Write-Up — How Hot Will San Diego Summers Get?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0a0a0f;
+      --bg2:    #12121a;
+      --border: rgba(255,255,255,0.08);
+      --text:   #e8e8f0;
+      --muted:  #666688;
+      --accent: #4fc3f7;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Back pill ── */
+    .back-link {
+      width: 100%;
+      max-width: 760px;
+      margin-bottom: 32px;
+    }
+
+    .back-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .back-link a:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      max-width: 760px;
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── Content ── */
+    .content {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: -8px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #c8c8d8;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: rgba(255,255,255,0.04);
+    }
+
+    th {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 11px 16px;
+      color: #c8c8d8;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      line-height: 1.5;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    td:first-child {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* ── Stat cards ── */
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 160px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .stat-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* ── Team member tags ── */
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .team-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      min-width: 160px;
+    }
+
+    .team-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .team-role {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-link">
+    <a href="index.html">← Back to visualization</a>
+  </div>
+
+  <header>
+    <div class="eyebrow">Project 3 · DSC 106 · Write-Up</div>
+    <h1>How Hot Will San Diego Summers Get?</h1>
+    <p class="subtitle">Design rationale, interaction decisions, and development process</p>
+  </header>
+
+  <div class="content">
+
+    <!-- ── Section 1: Design Rationale ── -->
+    <section>
+      <h2>Rationale for Design Decisions</h2>
+
+      <h3>The Question</h3>
+      <p>
+        Our visualization focuses on a single, human-relatable question: how much hotter will San Diego summers get in our lifetime? Rather than presenting a broad overview of global climate change, we anchored the story to a specific place and a specific time horizon (1950–2050) that feels personally relevant to a general audience. The goal was for someone with no climate science background to open the page and immediately understand what they are looking at and why it matters.
+      </p>
+
+      <h3>Temperature Anomaly vs. Raw Temperature</h3>
+      <p>
+        We display temperature as degrees above the pre-industrial baseline (1850–1900 average) rather than raw Fahrenheit or Celsius values. This makes two things immediately legible: the direction and magnitude of change over time, and the relationship to the Paris Agreement targets, which are themselves defined as warming above pre-industrial levels. Raw temperatures would have made the chart harder to interpret and the Paris reference lines meaningless.
+      </p>
+
+      <h3>5-Year Rolling Average</h3>
+      <p>
+        We initially plotted raw annual summer averages, but the resulting lines were visually noisy due to natural year-to-year climate variability. This obscured the long-term warming trend — the actual story we wanted to tell. A 5-year rolling average smooths the noise while preserving the trend, making the upward trajectory clearly legible to a non-technical viewer.
+      </p>
+
+      <h3>Line Chart over Bar Chart</h3>
+      <p>
+        We initially considered a grouped bar chart showing average summer temperature by decade. While that would have worked for a static comparison, the feedback we received pushed us toward a continuous line chart — which better supports zooming, panning, hovering, and threshold crossing markers. A line chart also communicates the idea of an unfolding trajectory over time more naturally than bars.
+      </p>
+
+      <h3>Three Future Scenarios, All Visible by Default</h3>
+      <p>
+        We show SSP1-1.9 (very low emissions), SSP2-4.5 (moderate emissions), and SSP5-8.5 (high emissions) simultaneously, all visible on load. The spread between them is the core message: our choices about emissions determine how hot San Diego summers will be. Showing them together makes that contrast immediate. We chose GFDL-ESM4 as the model because it is one of the few CMIP6 models that includes SSP1-1.9, allowing us to show a true low-emissions scenario alongside the worst case.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>What it represents</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Historical</td><td>Observed past climate data (1950–2014)</td></tr>
+            <tr><td>SSP1-1.9</td><td>Very low emissions — aggressive global climate action</td></tr>
+            <tr><td>SSP2-4.5</td><td>Moderate emissions — some action taken</td></tr>
+            <tr><td>SSP5-8.5</td><td>High emissions — business as usual</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Dark Background</h3>
+      <p>
+        We chose a dark color scheme for both aesthetic and functional reasons. The high-contrast colored lines (blue, orange, red) read more clearly against a dark background than a white one, and the overall visual feel communicates the gravity of the subject matter.
+      </p>
+
+      <h3>"Projections Begin" Divider</h3>
+      <p>
+        Without a clear visual separator, viewers had no way to distinguish observed historical data from modeled future projections. The dashed vertical line at 2015 — labeled "Projections begin (2015)" — makes this boundary explicit. We deliberately avoided labeling it "Past / Future" since the current year is 2026, which would have been misleading.
+      </p>
+
+      <h3>Paris Agreement Threshold Markers</h3>
+      <p>
+        We mark the exact year each scenario crosses +1.5°C and +2.0°C with colored dots and year labels. This transforms abstract climate policy targets into concrete, readable moments on the chart — for example: "SSP5-8.5 crosses the 1.5°C target in 2027." The dashed horizontal reference lines stay labeled directly on the chart so users never need to look up what the Paris targets mean.
+      </p>
+    </section>
+
+    <!-- ── Section 2: Interaction Techniques ── -->
+    <section>
+      <h2>Interaction Techniques</h2>
+
+      <h3>Checkbox Legend in the Sidebar</h3>
+      <p>
+        We considered toggle buttons and a floating legend, but ultimately placed checkboxes in a fixed sidebar to the right of the chart. This keeps the interaction always visible without overlapping the data, and the sidebar format naturally accommodates the plain-English scenario descriptions that help non-technical users understand what each line represents.
+      </p>
+
+      <h3>Animated Line Drawing on Load</h3>
+      <p>
+        Rather than showing all four lines simultaneously on page load — which felt overwhelming in early testing — we animate each line drawing itself one at a time in sequence: historical first, then SSP1-1.9, SSP2-4.5, and SSP5-8.5. This gives viewers time to register each scenario before the next appears.
+      </p>
+
+      <h3>Brush Slider for Time Range</h3>
+      <p>
+        A mini-chart below the main chart allows users to drag handles to focus on a specific time period. The brush also syncs with scroll-to-zoom on the main chart, giving users two intuitive ways to explore the time axis.
+      </p>
+
+      <h3>Hover Tooltips</h3>
+      <p>
+        Hovering over the chart shows a unified tooltip displaying the temperature anomaly for all visible scenarios at a given year. This supports the core comparison task: at any point in time, how different are the outcomes under each scenario?
+      </p>
+    </section>
+
+    <!-- ── Section 3: Development Process ── -->
+    <section>
+      <h2>Development Process</h2>
+
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-name">Arushi</div>
+          <div class="team-role">Formulated research question · 3 checkpoint visualizations · recorded video submission</div>
+        </div>
+        <div class="team-card">
+          <div class="team-name">Siya</div>
+          <div class="team-role">Checkpoint visualization · dataset exploration</div>
+        </div>
+        <div class="team-card">
+          <div class="team-name">Sahar</div>
+          <div class="team-role">Checkpoint visualization · dataset exploration</div>
+        </div>
+        <div class="team-card">
+          <div class="team-name">Juee</div>
+          <div class="team-role">Final submission — data pipeline, D3 visualization, write-up</div>
+        </div>
+      </div>
+
+      <p>
+        For the checkpoint submission, Arushi took the lead — formulating the research question and producing three visualizations, while Siya and Sahar each contributed one. Arushi also recorded and submitted the video. The team worked independently during this phase, with each member exploring and cleaning the dataset in their own way.
+      </p>
+      <p>
+        For the final submission, Juee took responsibility for the end-to-end work: sourcing and loading the CMIP6 dataset from Google Cloud, processing the data in Python, building the interactive D3.js visualization, and writing this write-up.
+      </p>
+
+      <h3>What Took the Most Time</h3>
+      <p>
+        By far the most time-consuming part was understanding and accessing the data. CMIP6 is a large, complex climate dataset with its own terminology — experiment IDs, source IDs, Zarr stores, SSP scenarios — none of which was familiar at the start. Significant time was spent learning what the catalog columns meant, identifying which model had all three SSP scenarios available (GFDL-ESM4), and resolving Google Cloud Storage authentication issues that prevented anonymous access to the data bucket.
+      </p>
+      <p>
+        Once the data was understood and successfully loaded, processing it in Python and building the D3 visualization were more straightforward, though decoupling the brush and zoom interactions required careful debugging.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">Total time</div>
+          <div class="stat-value">~20–25 hrs</div>
+          <div class="stat-desc">Combined person-hours for final submission</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Biggest challenge</div>
+          <div class="stat-value">The data</div>
+          <div class="stat-desc">Unfamiliar climate science terminology and cloud access issues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tech stack</div>
+          <div class="stat-value">D3.js v7</div>
+          <div class="stat-desc">+ Python, xarray, gcsfs, pandas for data prep</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
