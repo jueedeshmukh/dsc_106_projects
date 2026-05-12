@@ -149,11 +149,29 @@ d3.csv('san_diego_temp_anomaly.csv', d => ({
 
     gParisLabels.selectAll('*').remove();
     PARIS.forEach(p => {
+      const lx = MARGIN.left + 8;
+      const ly = yMain(p.value) - 6;
+
+      // background pill
+      const txt = p.label;
+      const approxW = txt.length * 6.8 + 12;
+      gParisLabels.append('rect')
+        .attr('x', lx - 4)
+        .attr('y', ly - 11)
+        .attr('width', approxW)
+        .attr('height', 18)
+        .attr('rx', 4)
+        .attr('fill', '#12121a')
+        .attr('opacity', 0.8);
+
       gParisLabels.append('text')
-        .attr('class', 'paris-label')
-        .attr('x', W - MARGIN.right + 4)
-        .attr('y', yMain(p.value) + 4)
-        .text(p.label);
+        .attr('x', lx)
+        .attr('y', ly + 2)
+        .attr('fill', p.value === 1.5 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)')
+        .attr('font-family', 'Space Mono, monospace')
+        .attr('font-size', 11)
+        .attr('font-weight', '700')
+        .text(txt);
     });
   }
 
@@ -162,21 +180,37 @@ d3.csv('san_diego_temp_anomaly.csv', d => ({
     const xd = xMain(FUTURE_START);
     if (xd < MARGIN.left || xd > W - MARGIN.right) return;
 
+    // vertical dashed line
     gDivider.append('line')
       .attr('class', 'divider-line')
       .attr('x1', xd).attr('x2', xd)
       .attr('y1', MARGIN.top).attr('y2', MARGIN.top + MAIN_H);
 
-    gDivider.append('text')
-      .attr('class', 'divider-label')
-      .attr('x', xd - 5).attr('y', MARGIN.top + 16)
-      .attr('text-anchor', 'end')
-      .text('◀ PAST');
+    // pill background for label so it's always readable
+    const labelText  = 'Projections begin (2015)';
+    const labelX     = xd + 8;
+    const labelY     = MARGIN.top + 18;
+    const padX = 6, padY = 4;
+    const approxW    = labelText.length * 6.2 + padX * 2;
+    const approxH    = 13 + padY * 2;
+
+    gDivider.append('rect')
+      .attr('x', labelX - padX)
+      .attr('y', labelY - 11 - padY)
+      .attr('width', approxW)
+      .attr('height', approxH)
+      .attr('rx', 4)
+      .attr('fill', '#12121a')
+      .attr('opacity', 0.85);
 
     gDivider.append('text')
-      .attr('class', 'divider-label')
-      .attr('x', xd + 5).attr('y', MARGIN.top + 16)
-      .text('FUTURE ▶');
+      .attr('x', labelX)
+      .attr('y', labelY)
+      .attr('fill', 'rgba(255,255,255,0.55)')
+      .attr('font-family', 'Space Mono, monospace')
+      .attr('font-size', 11)
+      .attr('font-weight', '700')
+      .text(labelText);
   }
 
   function updateLines() {
@@ -203,16 +237,32 @@ d3.csv('san_diego_temp_anomaly.csv', d => ({
         gDots.append('circle')
           .attr('class', `crossing-dot dot-${s}`)
           .attr('cx', cx).attr('cy', cy)
-          .attr('r', 5)
+          .attr('r', 6)
           .attr('fill', COLORS[s]);
+
+        // background for year label
+        const yearStr = String(crossed.year);
+        const lx = cx + 10;
+        const ly = cy - 8;
+        gDots.append('rect')
+          .attr('class', `crossing-dot dot-${s}`)
+          .attr('x', lx - 3)
+          .attr('y', ly - 12)
+          .attr('width', yearStr.length * 7.5 + 6)
+          .attr('height', 16)
+          .attr('rx', 3)
+          .attr('fill', '#12121a')
+          .attr('opacity', 0.85);
 
         gDots.append('text')
           .attr('class', `crossing-dot dot-${s}`)
-          .attr('x', cx + 7).attr('y', cy - 5)
+          .attr('x', lx)
+          .attr('y', ly)
           .attr('fill', COLORS[s])
           .attr('font-family', 'Space Mono, monospace')
-          .attr('font-size', 9)
-          .text(crossed.year);
+          .attr('font-size', 11)
+          .attr('font-weight', '700')
+          .text(yearStr);
       });
     });
   }
