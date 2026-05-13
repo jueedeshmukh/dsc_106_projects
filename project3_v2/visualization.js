@@ -286,7 +286,7 @@ d3.csv('san_diego_temp_anomaly.csv', d => ({
           .attr('fill', '#0a0a0f')
           .attr('font-family', 'DM Sans, sans-serif')
           .attr('font-size', 9)
-          .attr('font-weight', '100')
+          .style('font-weight', '300')
           .text(labelStr);
       });
     });
