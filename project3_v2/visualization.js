@@ -225,47 +225,69 @@ d3.csv('san_diego_temp_anomaly.csv', d => ({
   function updateDots() {
     gDots.selectAll('*').remove();
 
-    // ── Paris threshold crossing dots + year labels ──
+    // For each scenario, collect all crossings first, then render
+    // so we can position labels without overlap
     SCENARIO_ORDER.filter(s => s !== 'historical' && !hidden.has(s)).forEach(s => {
       const sd = byScenario.get(s);
       if (!sd) return;
-      PARIS.forEach(p => {
+
+      PARIS.forEach((p, pi) => {
         const crossed = sd.find(d => d.anomaly >= p.value);
         if (!crossed) return;
         const cx = xMain(crossed.year);
         const cy = yMain(crossed.anomaly);
         if (cx < MARGIN.left || cx > W - MARGIN.right) return;
 
+        // dot
         gDots.append('circle')
           .attr('class', `crossing-dot dot-${s}`)
           .attr('cx', cx).attr('cy', cy)
-          .attr('r', 6)
+          .attr('r', 5)
           .attr('fill', COLORS[s])
           .attr('stroke', '#0a0a0f')
-          .attr('stroke-width', 1.5);
+          .attr('stroke-width', 2);
 
-        const yearStr = String(crossed.year);
-        const lx = cx + 10;
-        const ly = cy - 8;
+        // short label: just year + threshold value
+        const labelStr = `${crossed.year} · ${pi === 0 ? '+1.5°C' : '+2.0°C'}`;
+        const labelW = labelStr.length * 5.8 + 12;
+        const labelH = 16;
+
+        // always above the dot, offset by pi so 1.5 and 2.0 don't collide
+        let lx = cx - labelW / 2;
+        let ly = cy - 14 - pi * 20;
+
+        // clamp inside chart
+        lx = Math.max(MARGIN.left + 2, Math.min(lx, W - MARGIN.right - labelW - 4));
+        ly = Math.max(MARGIN.top + 2, ly);
+
+        // thin connector
+        gDots.append('line')
+          .attr('class', `crossing-dot dot-${s}`)
+          .attr('x1', cx).attr('y1', cy - 6)
+          .attr('x2', cx).attr('y2', ly + labelH)
+          .attr('stroke', COLORS[s])
+          .attr('stroke-width', 1)
+          .attr('opacity', 0.5);
+
+        // pill
         gDots.append('rect')
           .attr('class', `crossing-dot dot-${s}`)
-          .attr('x', lx - 3)
-          .attr('y', ly - 12)
-          .attr('width', yearStr.length * 7.5 + 6)
-          .attr('height', 16)
-          .attr('rx', 3)
-          .attr('fill', '#12121a')
-          .attr('opacity', 0.85);
+          .attr('x', lx).attr('y', ly)
+          .attr('width', labelW).attr('height', labelH)
+          .attr('rx', 8)
+          .attr('fill', COLORS[s]);
 
+        // text
         gDots.append('text')
           .attr('class', `crossing-dot dot-${s}`)
-          .attr('x', lx)
-          .attr('y', ly)
-          .attr('fill', COLORS[s])
-          .attr('font-family', 'Space Mono, monospace')
-          .attr('font-size', 11)
-          .attr('font-weight', '700')
-          .text(yearStr);
+          .attr('x', lx + labelW / 2)
+          .attr('y', ly + 11)
+          .attr('text-anchor', 'middle')
+          .attr('fill', '#0a0a0f')
+          .attr('font-family', 'DM Sans, sans-serif')
+          .attr('font-size', 9)
+          .attr('font-weight', '100')
+          .text(labelStr);
       });
     });
   }
