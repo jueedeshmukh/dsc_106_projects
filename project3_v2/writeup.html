@@ -265,12 +265,12 @@
 
       <h3>5-Year Rolling Average</h3>
       <p>
-        We initially plotted raw annual summer averages, but the resulting lines were visually noisy due to natural year-to-year climate variability. This obscured the long-term warming trend — the actual story we wanted to tell. A 5-year rolling average smooths the noise while preserving the trend, making the upward trajectory clearly legible to a non-technical viewer.
+        We initially plotted raw annual summer averages, but the resulting lines were visually noisy due to natural year-to-year climate variability. This obscured the long-term warming trend. A 5-year rolling average smooths the noise while preserving the trend, making the upward trajectory clearly legible to a non-technical viewer.
       </p>
 
       <h3>Line Chart over Bar Chart</h3>
       <p>
-        We initially considered a grouped bar chart showing average summer temperature by decade. While that would have worked for a static comparison, the feedback we received pushed us toward a continuous line chart — which better supports zooming, panning, hovering, and threshold crossing markers. A line chart also communicates the idea of an unfolding trajectory over time more naturally than bars.
+        We initially created a static line chart showing average summer temperature by year, from 1950-2100. While that would have worked for a static comparison, the TA feedback pushed us towards more modes of interaction: zooming, panning, hovering, and threshold crossing markers. A line chart also communicates the idea of an unfolding trajectory over time more naturally than bars.
       </p>
 
       <h3>Three Future Scenarios, All Visible by Default</h3>
@@ -302,12 +302,12 @@
 
       <h3>"Projections Begin" Divider</h3>
       <p>
-        Without a clear visual separator, viewers had no way to distinguish observed historical data from modeled future projections. The dashed vertical line at 2015 — labeled "Projections begin (2015)" — makes this boundary explicit. We deliberately avoided labeling it "Past / Future" since the current year is 2026, which would have been misleading.
+        Without a clear visual separator, viewers had no way to distinguish observed historical data from modeled future projections. The dashed vertical line at 2015, labeled "Projections begin (2015)", makes this boundary explicit. We deliberately avoided labeling it "Past / Future" since the current year is 2026, which would have been misleading.
       </p>
 
       <h3>Paris Agreement Threshold Markers</h3>
       <p>
-        We mark the exact year each scenario crosses +1.5°C and +2.0°C with colored dots and year labels. This transforms abstract climate policy targets into concrete, readable moments on the chart — for example: "SSP5-8.5 crosses the 1.5°C target in 2027." The dashed horizontal reference lines stay labeled directly on the chart so users never need to look up what the Paris targets mean.
+        We mark the exact year each scenario crosses +1.5°C and +2.0°C with colored dots and year labels. This transforms abstract climate policy targets into concrete, readable moments on the chart. For example: "SSP5-8.5 crosses the 1.5°C target in 2027." The dashed horizontal reference lines stay labeled directly on the chart so users never need to look up what the Paris targets mean.
       </p>
     </section>
 
@@ -322,7 +322,7 @@
 
       <h3>Animated Line Drawing on Load</h3>
       <p>
-        Rather than showing all four lines simultaneously on page load — which felt overwhelming in early testing — we animate each line drawing itself one at a time in sequence: historical first, then SSP1-1.9, SSP2-4.5, and SSP5-8.5. This gives viewers time to register each scenario before the next appears.
+        Rather than showing all four lines simultaneously on page load, which felt overwhelming in early testing, we animate each line drawing itself one at a time in sequence: historical first, then SSP1-1.9, SSP2-4.5, and SSP5-8.5. This gives viewers time to register each scenario before the next appears.
       </p>
 
       <h3>Brush Slider for Time Range</h3>
